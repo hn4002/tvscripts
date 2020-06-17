@@ -1,0 +1,25 @@
+//
+// @version=4
+//
+
+study("Pane0", overlay=true)
+
+
+// Show current ATR
+atr_length = input(22, type=input.integer, title="ATR length")
+ATR = atr(atr_length)
+atrpct = ATR / close * 100
+//label showing the current ATR
+//var l = label.new(bar_index, na, color=color.yellow, yloc=yloc.price)
+//label.set_y(l, close + 2.5*ATR)
+//label.set_text(l, "ATR(22) = " + tostring(atrpct, "#.#") + "%")
+//label.set_x(l, bar_index)
+
+highestHigh = highest(high, 50)
+lowestLow = lowest(low, 50)
+//plot(highestHigh, color=color.red, linewidth=1)
+//plot(lowestLow, color=color.blue, linewidth=1)
+
+plot(sma(close, 10), color=color.blue)
+plot(sma(close, 50), color=color.orange)
+plot(sma(close, 200), color=color.black)
