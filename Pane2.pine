@@ -1,0 +1,27 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © MrHari
+
+//@version=4
+//study("Pane2")
+study(title="Stochastic %B", shorttitle="Stoch %B", format=format.price, precision=2)
+
+// Input parameters
+Klength = 14   // default = 14
+Dlength = 3    // default = 3
+//Smoothing = 3    // default = 3
+Overbought = 80
+Oversold = 20
+
+vFast = stoch(close, high, low, Klength)
+vSlow = sma(vFast, Dlength)
+
+hline(Overbought, color=color.black, linestyle=hline.style_solid)
+hline(Oversold, color=color.black, linestyle=hline.style_solid)
+
+plot(vFast, color=color.blue, title="K")
+plot(vSlow, color=color.orange, title="D")
+
+//quandl = security("QUANDL:BATS/BATS_AAPL", "D", close)
+//plot(quandl, color=color.green)
+
+
