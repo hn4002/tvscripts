@@ -1,0 +1,5 @@
+study(title="RS", shorttitle="RS", overlay=true)
+s = security("INX", "D", close) // 1 Day
+
+s2 = s * 70 / 2000
+plot(s2, color=blue, title="SP500")
