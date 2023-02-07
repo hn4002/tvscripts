@@ -1,2 +1,2 @@
 # tvscripts
-TV Scripts
+TradingView Scripts
