@@ -1,0 +1,30 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © lion10d100g
+
+
+//@version=4
+study("High/Low Channel", overlay=true)
+
+length = input(200, type=input.integer, minval=1, title="Length")
+smoothing = input(10, type=input.integer, minval=1, title="Smoothing")
+
+lower = ema(lowest(low, length), smoothing)
+higher = ema(highest(high, length), smoothing)
+center = (lower + higher) / 2
+price = sma(close, 2)
+lomid = (lower + center) / 2
+himid = (higher + center) / 2
+trend = price > center ? 1 : (price < center ? -1 : 0)
+
+fp = plot(price, title="Price", color=color.black, transp=100)
+fc = plot(center, title="Center", color=color.black, transp=100, linewidth=1)
+fh = plot(higher, title="High", color=color.black, transp=50, linewidth=1)
+fl = plot(lower, title="Low", color=color.black, transp=50, linewidth=1)
+
+//plot(himid, title="High Mid", color=color.black, transp=50, linewidth=1)
+//plot(lomid, title="Low Mid", color=color.black, transp=50, linewidth=1)
+
+//fill(fp, fc, title="Bull Fill", color=(trend > 0 ? color.green : na), transp=85)
+//fill(fp, fc, title="Bear Fill", color=(trend < 0 ? color.red : na), transp=85)
+fill(fh, fl, color=color.green, transp=50)
+//fill(fp, fh, color=color.gray, transp=95)
