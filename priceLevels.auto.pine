@@ -5,12 +5,12 @@
 indicator("priceLevels.auto", overlay = true)
 
 xlString = input.string("ASC,15.19,14.18;MACK,11.69,11.09;SHC,17.64,16.34", "PriceLevelString", confirm = true)
-showHR = input.bool(true, "-0.5R", group="Shwo Price Levels")
-show3R = input.bool(true, "3R", group="Shwo Price Levels")
-show4R = input.bool(true, "4R", group="Shwo Price Levels")
-show5R = input.bool(false, "5R", group="Shwo Price Levels")
-show6R = input.bool(false, "6R", group="Shwo Price Levels")
-show10R = input.bool(false, "10R", group="Shwo Price Levels")
+showHR = input.bool(true, "-0.5R", group="Show Price Levels")
+show3R = input.bool(true, "3R", group="Show Price Levels")
+show4R = input.bool(true, "4R", group="Show Price Levels")
+show5R = input.bool(false, "5R", group="Show Price Levels")
+show6R = input.bool(false, "6R", group="Show Price Levels")
+show10R = input.bool(false, "10R", group="Show Price Levels")
 
 backIndex = 80
 
