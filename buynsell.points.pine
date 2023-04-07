@@ -1,0 +1,115 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © lion10d100g
+
+//@version=5
+indicator("buynsell.points", overlay=true)
+
+//xlString = input.string("2023-04-03;GFAI,B|09:46:08|9.19,B|09:46:09|9.19,S|09:48:15|9.5,S|09:48:40|9.50", "BuySellString")
+xlString = input.string("2023-04-03;GFAI,B|1680529568000|9.19,S|1680529695000|9.5", "BuySellString")
+
+var colorBuy = color.blue
+var colorSell = color.purple
+var colorTransparent = color.new(color.black, 100)
+
+var zone = input("GMT-4")
+var dt = ""
+var date = ""
+var lines = array.new<string>()
+
+type PriceEvent
+    float dttime 
+    float price
+
+type stockBS
+    string symbol 
+    array<PriceEvent> buyEvents
+    array<PriceEvent> sellEvents
+
+
+if barstate.islastconfirmedhistory
+    lines := str.split(xlString, ";") 
+    date := array.shift(lines)
+    stocks = array.new<stockBS>()
+    for line in lines
+        symExecutions = str.split(line, ",")
+        symbol = array.shift(symExecutions)
+        sbs = stockBS.new(symbol = symbol, buyEvents = array.new<PriceEvent>(), sellEvents = array.new<PriceEvent>())
+        array.push(stocks, sbs)
+        for execution in symExecutions
+            tokens = str.split(execution, "|")
+            eventType = array.get(tokens, 0)
+            dttime = str.tonumber(array.get(tokens, 1))
+            price = str.tonumber(array.get(tokens, 2))
+            if eventType == "B"
+                array.push(sbs.buyEvents, PriceEvent.new(dttime = dttime, price = price))
+            else
+                array.push(sbs.sellEvents, PriceEvent.new(dttime = dttime, price = price))
+
+    for stock in stocks
+        if stock.symbol == syminfo.ticker
+            label.new(bar_index[30], close, "Got Symbol", color=color.yellow)  
+            for event in stock.buyEvents
+                //dt := date + "T" + event.dttime  + "-04:00"
+                //eventDate = timestamp(year(date))
+                eventDate = event.dttime
+
+                // Get bar_index from arrowDate
+                eventIndex = -1
+                for i = 0 to 5000
+                    if time[i] <= eventDate
+                        eventIndex := i
+                        break
+                if eventIndex >= 0
+                    label.new(bar_index[eventIndex], event.price, "⮕", color=colorTransparent, textcolor=colorBuy, style=label.style_label_center)
+                    label.new(bar_index[eventIndex], na, na, color=colorBuy, textcolor=color.red, style=label.style_arrowup, yloc=yloc.belowbar)
+
+            for event in stock.sellEvents
+                //dt := date + "T" + event.dttime  + "-04:00"
+                //eventDate = timestamp(dt)
+                eventDate = event.dttime
+
+                // Get bar_index from arrowDate
+                eventIndex = -1
+                for i = 0 to 5000
+                    if time[i] <= eventDate
+                        eventIndex := i
+                        break
+
+                if eventIndex >= 0
+                    label.new(bar_index[eventIndex], event.price, "⬅", color=colorTransparent, textcolor=colorSell, style=label.style_label_center)
+                    label.new(bar_index[eventIndex], na, na, color=colorSell, textcolor=color.red, style=label.style_arrowdown, yloc=yloc.abovebar)
+
+            // Define date and price coordinates
+            //arrowDate = timestamp("2023-04-06T14:53:00-04:00")
+            //arrowDate = 1680476245
+            //buyPrice = 314.70
+            //sellPrice = 315.20
+
+            //if timeframe.in_seconds() == 100
+            //    label.new(bar_index, close, "10 second chart", color=color.yellow, textcolor=color.red, style=label.style_label_up)
+            //if timeframe.in_seconds() == 600
+            //    label.new(bar_index, close, "1 min chart", color=color.yellow, textcolor=color.red, style=label.style_label_up)
+            //if timeframe.in_seconds() == 3000
+            //    label.new(bar_index, close, "5 min chart", color=color.yellow, textcolor=color.red, style=label.style_label_up)
+            //if timeframe.in_seconds() == 864000
+            //    label.new(bar_index, close, "Daily chart", color=color.yellow, textcolor=color.red, style=label.style_label_up)
+
+            
+            //label.new(bar_index[10], close[10]*1.002, str.format("AAA arrowDate: {0,number,integer}, time={1,number,integer}, time[3]={2,number,integer} ", arrowDate, time, time[3]), color=color.yellow)  
+            //label.new(bar_index[10], close[10]*1.004, str.format("AAA arrwIndex={0,number,integer} ", arrowIndex))  
+
+            // Draw arrow
+            //label.new(bar_index[arrowIndex], buyPrice, "⮕", color=colorTransparent, textcolor=colorBuy, style=label.style_label_center)
+            //label.new(bar_index[arrowIndex], sellPrice, "⬅", color=colorTransparent, textcolor=colorSell, style=label.style_label_center)
+            //label.new(bar_index[arrowIndex], sellPrice+1.0, na, color=colorSell, textcolor=color.red, style=label.style_triangleup)
+
+            //label.new(bar_index, close, str.tostring(timeframe.in_seconds()), color=color.yellow, textcolor=color.red, style=label.style_label_up)
+
+            //label.new(bar_index[arrowIndex], na, na, color=colorBuy, textcolor=color.red, style=label.style_arrowup, yloc=yloc.belowbar)
+            //label.new(bar_index[arrowIndex], na, na, color=colorSell, textcolor=color.red, style=label.style_arrowdown, yloc=yloc.abovebar)
+            //plotshape(bar_index[arrowIndex], "", shape.arrowup,   location.abovebar, color.green)
+        
+        // End if stock.symbol == syminfo.ticker
+    // End for stock in stocks
+// End if barstate.islastconfirmedhistory
+
